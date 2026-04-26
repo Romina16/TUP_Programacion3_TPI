@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food Store</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
     <header>
         <h1>Food Store</h1>
@@ -17,28 +20,36 @@
             </ul>
         </nav>
     </header>
-    
-    <aside>
-        <h2>Categorías</h2>
-        <ul id="lista-categorias"> </ul>
-    </aside>
-    
-    <main>
-        <form>
-            <input id="buscarProducto" type="text" placeholder="Buscar Productos...">
-            <button type="submit">Buscar</button>
-        </form>
-        <h2>Productos Destacados</h2>
-        <section id="contenedor-productos">
-            <!-- Aquí se cargarán los productos dinámicamente -->
-        </section>
-    </main>
-    
+
+    <div class="contenedor-principal">
+        <aside>
+            <h2>Categorías</h2>
+            <ul id="lista-categorias"> </ul>
+        </aside>
+
+        <main>
+            <form>
+                <input id="buscarProducto" type="text" placeholder="Buscar Productos...">
+                <button id="btn-buscarProducto" type="submit">Buscar</button>
+            </form>
+            <h2>Productos Destacados</h2>
+            <section id="contenedor-productos">
+                <!-- Aquí se cargarán los productos dinámicamente -->
+            </section>
+        </main>
+
+    </div>
     <footer>
-        <p>&copy; 2026 Food Store. Todos los derechos reservados.</p>    
-        <p>Contacto: <a href="mailto:info@foodstore.com">info@foodstore.com</a></p>
+        <div class="footer-contacto">
+            <h4>Contacto</h4>
+            <p><a href="mailto:info@foodstore.com">info@foodstore.com</a></p>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Food Store. Todos los derechos reservados.</p>
+        </div>
     </footer>
-    <script src="./js/data.js"></script> 
+    <script src="./js/data.js"></script>
     <script src="./js/main.js"></script>
 </body>
+
 </html>

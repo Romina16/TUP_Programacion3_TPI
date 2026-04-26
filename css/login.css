@@ -1,4 +1,6 @@
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
@@ -9,14 +11,15 @@
     --color-texto: #333;
     --color-blanco: #fff;
     --color-borde: #ddd;
-    --color-focus: #ff4500; /* Corregido del PDF  */
+    --color-focus: #ff4500;
+    /* Corregido del PDF  */
 
     --fuente-base: Arial, sans-serif;
 }
 
 
-body{
-    font-family:var(--fuente-base);
+body {
+    font-family: var(--fuente-base);
     background-color: var(--color-fondo);
     color: var(--color-texto);
     display: flex;
@@ -26,22 +29,22 @@ body{
     margin: 0;
 }
 
-.login-card{
+.login-card {
     background-color: var(--color-blanco);
     padding: 2rem;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 400px;
     text-align: center;
 }
 
-.login-card_logo{
+.login-card_logo {
     text-align: center;
     margin-bottom: 1rem;
 }
 
-.Login-card_titulo{
+.login-card_titulo {
     font-size: 1.5rem;
     font-weight: 800;
     text-transform: uppercase;
@@ -51,7 +54,7 @@ body{
     line-height: 1.1;
 }
 
-.Login-card_subtitulo {
+.login-card_subtitulo {
     font-size: 1rem;
     color: var(--color-texto);
     letter-spacing: 0.12rem;
@@ -67,7 +70,7 @@ body{
     gap: 0.35rem;
 }
 
-.login-form_label{
+.login-form_label {
     font-size: 0.9rem;
     font-weight: 600;
     color: var(--color-texto);
@@ -76,7 +79,7 @@ body{
     letter-spacing: 0.02em;
 }
 
-.login-form_input{
+.login-form_input {
     padding: 0.75rem;
     border: 1px solid var(--color-borde);
     border-radius: 4px;
@@ -87,12 +90,12 @@ body{
     transition: border-color 0.3s ease;
 }
 
-.login-form_input:focus{
+.login-form_input:focus {
     border-color: var(--color-focus);
     outline: none;
 }
 
-.login-form_button{
+.login-form_button {
     margin-top: 1.5rem;
     padding: 0.75rem;
     background-color: var(--color-primario);
@@ -105,11 +108,11 @@ body{
     transition: background-color 0.3s ease;
 }
 
-.login-form_button:hover{
+.login-form_button:hover {
     background-color: var(--color-focus);
 }
 
-.login-card_registro{
+.login-card_registro {
     margin-top: 1rem;
     font-size: 0.9rem;
     color: var(--color-texto);

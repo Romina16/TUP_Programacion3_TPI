@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página de administración</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
     <header>
         <h1>Panel de Administración</h1>
@@ -18,7 +21,7 @@
     <hr>
     <main>
         <button type="button">Nuevo producto</button><br><br>
-        <table border="1" >
+        <table border="1">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -30,16 +33,16 @@
                     <th>Acciones</th>
                 </tr>
             </thead>
-            <tbody> 
+            <tbody>
                 <tr>
                     <td>1</td>
                     <td><img src="assets\hamburguesa.jpg" alt="Hamburguesa Triple" width="50" height="50"></td>
                     <td>Hamburguesa Triple</td>
                     <td>Hamburguesa</td>
                     <td>$25000.00</td>
-                    <td>12</td> 
+                    <td>12</td>
                     <td>
-                        <a href ="#">Editar</a> |
+                        <a href="#">Editar</a> |
                         <a href="#">Eliminar</a>
                     </td>
                 </tr>
@@ -49,9 +52,9 @@
                     <td>Pizza Muzarella</td>
                     <td>Pizza</td>
                     <td>$18000.00</td>
-                    <td>5</td> 
+                    <td>5</td>
                     <td>
-                        <a href ="#">Editar</a> |
+                        <a href="#">Editar</a> |
                         <a href="#">Eliminar</a>
                     </td>
                 </tr>
@@ -61,9 +64,9 @@
                     <td>Papas con cheddar</td>
                     <td>Papas fritas</td>
                     <td>$8000.00</td>
-                    <td>0</td> 
+                    <td>0</td>
                     <td>
-                        <a href ="#">Editar</a> |
+                        <a href="#">Editar</a> |
                         <a href="#">Eliminar</a>
                     </td>
                 </tr>
@@ -84,13 +87,14 @@
                 <input type="number" id="stock" name="stock" required><br><br>
 
                 <label for="categoria">Categoría:</label><br>
-                <select id = "categoria">
+                <select id="categoria">
                     <option value="h">Hamburguesas</option>
                     <option value="p">Pizzas</option>
                 </select><br><br>
 
                 <label for="descripcion">Descripción:</label><br>
-                <textarea id="descripcion" name="descripcion" rows="4" cols="50" placeholder="Ingresa los ingredientes..."></textarea>
+                <textarea id="descripcion" name="descripcion" rows="4" cols="50"
+                    placeholder="Ingresa los ingredientes..."></textarea>
                 <br><br>
 
                 <button type="submit">Guardar Producto</button>
@@ -101,4 +105,5 @@
         <p>Panel administracion - Food Store v1.0</p>
     </footer>
 </body>
+
 </html>

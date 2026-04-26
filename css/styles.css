@@ -1,0 +1,248 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* variables */
+:root {
+    --color-primario: #ff6347;
+    --color-fondo: #f0f0f0;
+    --color-texto: #333;
+    --color-blanco: #fff;
+    --color-borde: #ddd;
+    --color-focus: #ff4500;
+    /* Corregido del PDF  */
+
+    --fuente-base: Arial, sans-serif;
+}
+
+header {
+    background-color: var(--color-primario);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    gap: 100px;
+}
+
+header h1 {
+    color: var(--color-blanco);
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+}
+
+nav {
+    margin-right: auto;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 25px;
+    margin: 0;
+    padding: 0;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--color-blanco);
+    font-size: 1rem;
+    font-weight: 600;
+    transition: opacity 0.3s ease;
+}
+
+nav a:hover {
+    opacity: 0.8;
+    color: var(--color-blanco);
+}
+
+.contenedor-principal {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 30px;
+    padding: 30px 5%;
+    margin-top: 10px;
+}
+
+aside {
+    background-color: var(--color-blanco);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+}
+
+aside h2 {
+    font-size: 1.1rem;
+    color: var(--color-texto);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--color-fondo);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#lista-categorias {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#lista-categorias li {
+    margin-bottom: 12px;
+}
+
+#lista-categorias a {
+    text-decoration: none;
+    color: var(--color-texto);
+    display: block;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 6px;
+    background-color: var(--color-fondo);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    transition: background 0.3s;
+}
+
+#lista-categorias a:hover {
+    background-color: var(--color-primario);
+    color: var(--color-blanco);
+    transform: translateX(5px);
+    /* Pequeño desplazamiento a la derecha */
+}
+
+main h2 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+    color: var(--color-texto);
+}
+
+main form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+#buscarProducto {
+    padding: 15px 20px;
+    border: none;
+    font-size: 1rem;
+    outline: none;
+}
+
+#btn-buscarProducto {
+    background-color: var(--color-primario);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: backgroung 0.3s;
+}
+
+#btn-buscarProducto:hover {
+    background-color: var(--color-focus);
+}
+
+
+body {
+    font-family: var(--fuente-base);
+    background-color: var(--color-fondo);
+    margin: 0;
+    display: block;
+}
+
+#contenedor-productos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.tarjeta-producto {
+    background-color: var(--color-blanco);
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.tarjeta-producto:hover {
+    transform: scale(1);
+}
+
+.tarjeta-producto img {
+    max-width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.tarjeta-producto h3 {
+    margin: 10px 0;
+    color: var(--color-texto);
+}
+
+.precio {
+    color: var(--color-primario);
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.btn-agregar {
+    background-color: var(--color-primario);
+    color: var(--color-blanco);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.btn-agregar:hover {
+    background-color: #ff4500;
+    transform: scale(1.02);
+}
+
+footer {
+    background-color: #222;
+    color: var(--color-blanco);
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.footer-contacto h4 {
+    color: var(--color-primario);
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+.footer-contacto a {
+    text-decoration: none;
+    color: var(--color-blanco);
+}
+
+.footer-contacto a:hover {
+    text-decoration: underline;
+}
+
+.footer-bottom {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #444;
+    font-size: 0.85rem;
+    color: #888;
+}
