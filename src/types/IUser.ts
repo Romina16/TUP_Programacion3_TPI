@@ -1,4 +1,4 @@
-import type { Rol } from './Rol.js';
+import type { Rol } from './Rol';
 
 export interface IUser {
     id: String;
@@ -9,11 +9,13 @@ export interface IUser {
 }
 
 export interface IProducto {
-    id: string;
-    email: string;
-    password: string;
-    nombre: string;
-    rol: Rol;
+    id: number;
+  nombre: string;
+  descripcion: string;
+  precio: number;
+  imagen: string;
+  alt: string;
+  categoria: string;
 }
 
 export interface IRegisterResult {

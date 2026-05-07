@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food Store - Login</title>
-    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="../../../../css/login.css">
+    
 </head>
 
 <body>
@@ -16,7 +17,7 @@
             <p class="Login-card_subtitulo">Inicia sesión</p>
         </div>
 
-        <form class="login-form">
+        <form class="login-form" id="login-form">
             <label class="login-form_label" for="email">Correo electrónico:</label>
             <input class="login-form_input" id="email" type="email" name="email" placeholder="tucorreo@ejemplo.com "
                 required>
@@ -25,13 +26,15 @@
             <input class="login-form_input" id="password" type="password" name="password"
                 placeholder="Minimo 8 caracteres" required>
 
+            <p id="error-msg" hidden style="color: red; text-align: center; font-size: 0.9rem;"></p>
+
             <button class="login-form_button" type="submit">Ingresar</button>
         </form>
         <p class="login-card_registro">
-            ¿No tenés cuenta? <a href="#">Registrate acá</a>
+           ¿No tenés cuenta? <a href="../registro/index.html">Registrate acá</a>
         </p>
 
     </div>
+     <script type="module" src="./login.ts"></script>
 </body>
-
 </html>

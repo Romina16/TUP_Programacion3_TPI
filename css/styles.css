@@ -23,7 +23,7 @@ header {
     display: flex;
     align-items: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    gap: 100px;
+    justify-content: space-between;
 }
 
 header h1 {
@@ -35,12 +35,10 @@ header h1 {
     flex-shrink: 0;
 }
 
-nav {
-    margin-right: auto;
-}
 
 nav ul {
     display: flex;
+    align-items: center;
     list-style: none;
     gap: 25px;
     margin: 0;
@@ -58,6 +56,25 @@ nav a {
 nav a:hover {
     opacity: 0.8;
     color: var(--color-blanco);
+}
+
+/* --- Botón de Cerrar Sesión en el Nav --- */
+.logout-button {
+    background-color: transparent;
+    color: var(--color-blanco);
+    border: 2px solid var(--color-blanco);
+    padding: 6px 15px;
+    border-radius: 20px; /* Borde bien redondeado tipo píldora */
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: var(--fuente-base);
+}
+
+.logout-button:hover {
+    background-color: var(--color-blanco);
+    color: var(--color-primario); /* Invertimos colores al pasar el mouse */
 }
 
 .contenedor-principal {
@@ -186,7 +203,9 @@ body {
     height: 200px;
     object-fit: cover;
     border-radius: 4px;
+    object-position: center;
 }
+
 
 .tarjeta-producto h3 {
     margin: 10px 0;
@@ -199,22 +218,46 @@ body {
     font-size: 1.2rem;
 }
 
-.btn-agregar {
-    background-color: var(--color-primario);
-    color: var(--color-blanco);
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    width: 100%;
-    font-weight: 700;
-    font-size: 1.1rem;
+.tarjeta-producto__actions {
+    display: flex;
+    gap: 10px; /* Separación entre botones */
+    margin-top: 15px;
 }
 
-.btn-agregar:hover {
-    background-color: #ff4500;
-    transform: scale(1.02);
+.btn {
+    flex: 1; /* Hace que ambos botones ocupen el mismo ancho */
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
+
+/* --- Botón Principal ("Agregar") --- */
+.btn:not(.btn--secondary) {
+    background-color: var(--color-primario);
+    color: var(--color-blanco);
+}
+
+.btn:not(.btn--secondary):hover {
+    background-color: var(--color-focus);
+    transform: translateY(-2px); /* Pequeño saltito al pasar el mouse */
+}
+
+/* --- Botón Secundario ("Ver detalles") --- */
+.btn--secondary {
+    background-color: var(--color-borde);
+    color: var(--color-texto);
+}
+
+.btn--secondary:hover {
+    background-color: #ccc;
+    transform: translateY(-2px);
+}
+
+
 
 footer {
     background-color: #222;
@@ -245,4 +288,145 @@ footer {
     border-top: 1px solid #444;
     font-size: 0.85rem;
     color: #888;
+}
+
+/* Agregá esto al final de tu CSS */
+#welcome-msg {
+    color: var(--color-blanco);
+    font-weight: 700;
+    border-right: 2px solid rgba(255, 255, 255, 0.3); /* Una barrita sutil separadora */
+    padding-right: 20px; 
+}
+
+/* =========================================
+   ESTILOS DEL PANEL DE ADMINISTRADOR
+========================================= */
+
+.admin-container {
+    padding: 30px 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: calc(100vh - 180px); /* Empuja el footer hacia abajo */
+}
+
+.admin-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.admin-header-actions .btn {
+    flex: none; /* Le saca la orden de estirarse */
+    width: auto; /* Que ocupe solo el ancho de su texto */
+    padding: 10px 25px; /* Un tamaño cómodo para hacer clic */
+}
+
+/* --- Tabla de Productos --- */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse; /* Elimina los espacios feos entre celdas */
+    background-color: var(--color-blanco);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden; /* Mantiene los bordes redondeados con color de fondo */
+    margin-bottom: 30px;
+}
+
+.admin-table th, .admin-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-borde);
+    vertical-align: middle;
+}
+
+.admin-table th {
+    background-color: var(--color-primario);
+    color: var(--color-blanco);
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.admin-table tr:hover {
+    background-color: #fafafa;
+}
+
+.admin-table img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover; /* No deforma las fotos */
+    border-radius: 6px;
+    display: block;
+}
+
+/* --- Botones de Acción (Editar / Eliminar) --- */
+.action-links a {
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: var(--color-blanco);
+    margin-right: 5px;
+    transition: opacity 0.3s ease;
+}
+
+.action-links a:hover {
+    opacity: 0.8;
+}
+
+.btn-edit { background-color: #f39c12; }
+.btn-delete { background-color: #e74c3c; }
+
+/* --- Formulario Rápido (Details/Summary) --- */
+.admin-details {
+    background: var(--color-blanco);
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.admin-details summary {
+    font-weight: bold;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--color-primario);
+    margin-bottom: 20px;
+}
+
+.admin-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    align-items: end; /* Alinea los inputs abajo para que queden parejos */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-texto);
+}
+
+.form-group input, 
+.form-group select, 
+.form-group textarea {
+    padding: 10px;
+    border: 1px solid var(--color-borde);
+    border-radius: 6px;
+    font-family: var(--fuente-base);
+    font-size: 0.95rem;
+}
+
+.form-group input:focus, 
+.form-group select:focus, 
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--color-primario);
 }
