@@ -1,74 +1,58 @@
 import type { CartItem } from "../../../types/product";
+import type { FormaPago, Pedido } from "../../../types/pedido";
+import { ENVIO, calcularSubtotal, calcularTotal, clearCart, removeFromCart, updateCantidad } from "../../../utils/cart";
+import { fetchJson } from "../../../utils/fetchJson";
+import { getCart, getPedidosLocales, getUser, savePedidoLocal } from "../../../utils/localStorage";
+import { initPage, navigate } from "../../../utils/navigate";
+
+if (!initPage("USUARIO")) {
+  throw new Error("redirecting");
+}
 
 const itemsList = document.getElementById("itemsList") as HTMLDivElement;
 const summarySubtotal = document.getElementById("summarySubtotal") as HTMLSpanElement;
+const summaryEnvio = document.getElementById("summaryEnvio") as HTMLSpanElement;
 const summaryTotal = document.getElementById("summaryTotal") as HTMLSpanElement;
 const btnFinalizar = document.getElementById("btnFinalizar") as HTMLButtonElement;
 const btnVaciar = document.getElementById("btnVaciar") as HTMLButtonElement;
+const modalOverlay = document.getElementById("modalOverlay") as HTMLDivElement;
+const modalClose = document.getElementById("modalClose") as HTMLButtonElement;
+const checkoutForm = document.getElementById("checkoutForm") as HTMLFormElement;
+const checkoutError = document.getElementById("checkoutError") as HTMLParagraphElement;
 
-// Le ponemos "| null" porque estos elementos pueden no estar en el HTML
-const modalOverlay = document.getElementById("modalOverlay") as HTMLDivElement | null;
-const modalClose = document.getElementById("modalClose") as HTMLButtonElement | null;
-
-const CATEGORY_EMOJI: Record<string, string> = {
-  Pizzas: "🍕",
-  Hamburguesas: "🍔",
-  Bebidas: "🥤",
-  Postres: "🍰",
-  Empanadas: "🥟",
-  Ensaladas: "🥗",
-};
-
-function getCart(): CartItem[] {
-  const raw = localStorage.getItem("cart");
-  return raw ? (JSON.parse(raw) as CartItem[]) : [];
-}
-
-function saveCart(items: CartItem[]): void {
-  localStorage.setItem("cart", JSON.stringify(items));
+function fmt(valor: number): string {
+  return `$${valor.toLocaleString("es-AR")}`;
 }
 
 function updateSummary(items: CartItem[]): void {
-  const total = items.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
-  const formatted = `$${total.toLocaleString("es-AR")}`;
-  
-  if (summarySubtotal) summarySubtotal.textContent = formatted;
-  if (summaryTotal) summaryTotal.textContent = formatted;
-  
-  // Habilitar o deshabilitar el botón según si hay items
-  if (btnFinalizar) {
-      btnFinalizar.disabled = items.length === 0;
-  }
+  summarySubtotal.textContent = fmt(calcularSubtotal(items));
+  summaryEnvio.textContent = items.length > 0 ? fmt(ENVIO) : fmt(0);
+  summaryTotal.textContent = fmt(calcularTotal(items));
+  btnFinalizar.disabled = items.length === 0;
 }
-// CARGAR CARRITO
+
 function renderCart(): void {
-  if (!itemsList) return;
   itemsList.innerHTML = "";
   const items = getCart();
 
-  if (items.length === 0) { // SI EL CARRITO ESTÁ VACÍO
-    const empty = document.createElement("p");
-    empty.style.textAlign = "center";
-    empty.style.fontSize = "1.2rem";
-    empty.style.color = "var(--color-texto)";
-    empty.style.marginTop = "2rem";
-    empty.textContent = "Tu carrito está vacío.";
-    itemsList.appendChild(empty);
+  if (items.length === 0) {
+    itemsList.innerHTML = `
+      <div class="empty-state">
+        <p>Tu carrito está vacío.</p>
+        <a class="btn-checkout" href="../home/home.html">Ir a la tienda</a>
+      </div>`;
     updateSummary([]);
     return;
   }
 
-  items.forEach((item) => {// RECORREMOS LOS ITEMS DEL CARRITO PARA MOSTRARLOS
+  items.forEach((item) => {
     const card = document.createElement("article");
     card.className = "product-card";
 
-    const icon = document.createElement("div");
-    icon.className = "product-img";
-    icon.style.display = "flex";
-    icon.style.alignItems = "center";
-    icon.style.justifyContent = "center";
-    icon.style.fontSize = "3.5rem"; // Emoji grande
-    icon.textContent = CATEGORY_EMOJI[item.categoria] ?? "🍽️";
+    const img = document.createElement("img");
+    img.className = "product-img";
+    img.src = item.imagen;
+    img.alt = item.nombre;
 
     const info = document.createElement("div");
     info.className = "product-details";
@@ -77,18 +61,11 @@ function renderCart(): void {
     const name = document.createElement("h3");
     name.textContent = item.nombre;
 
-    const category = document.createElement("p");
-    category.className = "category";
-    category.style.color = "#666";
-    category.style.margin = "0 0 10px 0";
-    category.textContent = item.categoria;
-
     const subtotal = document.createElement("p");
     subtotal.className = "subtotal-text";
-    subtotal.style.margin = "0";
-    subtotal.innerHTML = `Subtotal: <strong>$${(item.precio * item.cantidad).toLocaleString("es-AR")}</strong>`;
+    subtotal.innerHTML = `Subtotal: <strong>${fmt(item.precio * item.cantidad)}</strong>`;
 
-    info.append(name, category, subtotal);
+    info.append(name, subtotal);
 
     const controls = document.createElement("div");
     controls.className = "product-controls";
@@ -100,13 +77,8 @@ function renderCart(): void {
     btnDecrement.textContent = "-";
     btnDecrement.disabled = item.cantidad <= 1;
     btnDecrement.addEventListener("click", () => {
-      const cart = getCart();
-      const found = cart.find((i) => i.id === item.id);
-      if (found && found.cantidad > 1) {
-        found.cantidad -= 1;
-        saveCart(cart);
-        renderCart();
-      }
+      updateCantidad(item.id, item.cantidad - 1);
+      renderCart();
     });
 
     const qty = document.createElement("span");
@@ -114,14 +86,10 @@ function renderCart(): void {
 
     const btnIncrement = document.createElement("button");
     btnIncrement.textContent = "+";
+    btnIncrement.disabled = item.cantidad >= item.stock;
     btnIncrement.addEventListener("click", () => {
-      const cart = getCart();
-      const found = cart.find((i) => i.id === item.id);
-      if (found) {
-        found.cantidad += 1;
-        saveCart(cart);
-        renderCart();
-      }
+      updateCantidad(item.id, item.cantidad + 1);
+      renderCart();
     });
 
     qtySelector.append(btnDecrement, qty, btnIncrement);
@@ -130,35 +98,78 @@ function renderCart(): void {
     btnRemove.className = "btn-delete";
     btnRemove.textContent = "Eliminar";
     btnRemove.addEventListener("click", () => {
-      saveCart(getCart().filter((i) => i.id !== item.id));
+      removeFromCart(item.id);
       renderCart();
     });
 
     controls.append(qtySelector, btnRemove);
-    card.append(icon, info, controls);
+    card.append(img, info, controls);
     itemsList.appendChild(card);
   });
 
   updateSummary(items);
 }
 
-// Eventos de botones con Optional Chaining (?.) para evitar errores si no existen
-btnFinalizar?.addEventListener("click", () => {
-  if (modalOverlay) {
-    modalOverlay.classList.add("modal--show");
-  } else {
-    alert("¡Funcionalidad de checkout en construcción!");
-  }
+btnFinalizar.addEventListener("click", () => {
+  modalOverlay.classList.add("modal--show");
 });
 
-modalClose?.addEventListener("click", () => {
-  modalOverlay?.classList.remove("modal--show");
+modalClose.addEventListener("click", () => {
+  modalOverlay.classList.remove("modal--show");
 });
 
-btnVaciar?.addEventListener("click", () => {
-  saveCart([]);
+btnVaciar.addEventListener("click", () => {
+  clearCart();
   renderCart();
 });
 
-// Inicializamos el carrito
+checkoutForm.addEventListener("submit", async (e: Event) => {
+  e.preventDefault();
+  checkoutError.hidden = true;
+
+  const telefono = (document.getElementById("telefono") as HTMLInputElement).value.trim();
+  const formaPago = (document.getElementById("formaPago") as HTMLSelectElement).value as FormaPago;
+  const items = getCart();
+
+  if (!telefono) {
+    checkoutError.textContent = "Ingresá un teléfono de contacto.";
+    checkoutError.hidden = false;
+    return;
+  }
+  if (items.length === 0) {
+    checkoutError.textContent = "El carrito está vacío.";
+    checkoutError.hidden = false;
+    return;
+  }
+
+  const user = getUser();
+  if (!user) {
+    navigate("/src/pages/auth/login/index.html");
+    return;
+  }
+
+  const pedidosJson = await fetchJson<Pedido[]>("pedidos.json");
+  const todosLosPedidos = [...pedidosJson, ...getPedidosLocales()];
+  const nuevoId = Math.max(0, ...todosLosPedidos.map((p) => p.id)) + 1;
+  const subtotal = calcularSubtotal(items);
+
+  const pedido: Pedido = {
+    id: nuevoId,
+    fecha: new Date().toISOString().slice(0, 10),
+    estado: "PENDIENTE",
+    total: subtotal + ENVIO,
+    formaPago,
+    idUsuario: user.id,
+    detalles: items.map((item) => ({
+      idProducto: item.id,
+      cantidad: item.cantidad,
+      subtotal: item.precio * item.cantidad,
+    })),
+  };
+
+  savePedidoLocal(pedido);
+  clearCart();
+  navigate("/src/pages/client/orders/orders.html?confirmado=1");
+});
+
 renderCart();

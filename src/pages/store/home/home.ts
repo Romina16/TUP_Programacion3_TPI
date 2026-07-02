@@ -1,160 +1,133 @@
-/*import { PRODUCTS, getCategories } from "../../../data/data";
-import type { Product, CartItem } from "../../../types/product";
+import type { ICategory } from "../../../types/categoria";
+import type { Product } from "../../../types/product";
+import { logout } from "../../../utils/auth";
+import { getCart, getUser } from "../../../utils/localStorage";
+import { fetchJson } from "../../../utils/fetchJson";
+import { initPage } from "../../../utils/navigate";
 
-const CATEGORY_EMOJI: Record<string, string> = {
-  Pizzas: "🍕",
-  Hamburguesas: "🍔",
-  Bebidas: "🥤",
-  Postres: "🍰",
-  Empanadas: "🥟",
-  Ensaladas: "🥗",
-};
+if (!initPage("USUARIO")) {
+  throw new Error("redirecting");
+}
 
-let activeCategory: number | null = null;
-let searchQuery = "";
-
+const categoryList = document.getElementById("categoryList") as HTMLUListElement;
 const productList = document.getElementById("productList") as HTMLDivElement;
 const noResults = document.getElementById("noResults") as HTMLParagraphElement;
 const searchInput = document.getElementById("searchInput") as HTMLInputElement;
-const categoryList = document.getElementById("categoryList") as HTMLUListElement;
-const cartCountEl = document.getElementById("cartCount") as HTMLSpanElement;
-const toast = document.getElementById("toast") as HTMLDivElement;
+const sortSelect = document.getElementById("sortSelect") as HTMLSelectElement;
+const cartCount = document.getElementById("cartCount") as HTMLSpanElement;
+const welcomeMsg = document.getElementById("welcome-msg") as HTMLLIElement;
+const btnLogout = document.getElementById("btnLogout") as HTMLButtonElement;
 
-function getCart(): CartItem[] {
-  const raw = localStorage.getItem("cart");
-  return raw ? (JSON.parse(raw) as CartItem[]) : [];
-}
+let categorias: ICategory[] = [];
+let productos: Product[] = [];
+let categoriaSeleccionada: number | null = null;
 
-function saveCart(items: CartItem[]): void {
-  localStorage.setItem("cart", JSON.stringify(items));
-}
-
-function addToCart(product: Product): void {
+function updateCartBadge(): void {
   const cart = getCart();
-  const existing = cart.find((item) => item.id === product.id);
-  if (existing) {
-    existing.cantidad += 1;
-  } else {
-    cart.push({ id: product.id, nombre: product.nombre, precio: product.precio, cantidad: 1, categoria: product.categorias[0]?.nombre ?? "" });
-  }
-  saveCart(cart);
-  updateCartCount();
-  showToast();
+  cartCount.textContent = String(cart.reduce((acc, i) => acc + i.cantidad, 0));
 }
 
-function updateCartCount(): void {
-  const cart = getCart();
-  const total = cart.reduce((acc, item) => acc + item.cantidad, 0);
-  cartCountEl.textContent = String(total);
-}
+function renderCategorias(): void {
+  categoryList.innerHTML = "";
 
-function showToast(): void {
-  toast.classList.add("toast--show");
-  setTimeout(() => toast.classList.remove("toast--show"), 2000);
-}
-
-function getFilteredProducts(): Product[] {
-  return PRODUCTS.filter((p) => {
-    const matchesCategory =
-      activeCategory === null || p.categorias.some((c) => c.id === activeCategory);
-    const matchesSearch = p.nombre.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+  const todas = document.createElement("li");
+  todas.className = "sidebar__item" + (categoriaSeleccionada === null ? " sidebar__item--active" : "");
+  todas.textContent = "Todas";
+  todas.addEventListener("click", () => {
+    categoriaSeleccionada = null;
+    renderCategorias();
+    renderProductos();
   });
+  categoryList.appendChild(todas);
+
+  categorias
+    .filter((c) => !c.eliminado)
+    .forEach((c) => {
+      const li = document.createElement("li");
+      li.className = "sidebar__item" + (categoriaSeleccionada === c.id ? " sidebar__item--active" : "");
+      li.textContent = c.nombre;
+      li.addEventListener("click", () => {
+        categoriaSeleccionada = c.id;
+        renderCategorias();
+        renderProductos();
+      });
+      categoryList.appendChild(li);
+    });
 }
-//CARGAR PRODUCTOS
-function renderProducts(list: Product[]): void {
-  productList.innerHTML = "";
 
-  if (list.length === 0) {
-    noResults.style.display = "block";
-    return;
+function renderProductos(): void {
+  const busqueda = searchInput.value.trim().toLowerCase();
+  const orden = sortSelect.value;
+
+  let visibles = productos.filter((p) => p.disponible && !p.eliminado);
+
+  if (categoriaSeleccionada !== null) {
+    visibles = visibles.filter((p) => p.categoriaId === categoriaSeleccionada);
   }
-  noResults.style.display = "none";
+  if (busqueda) {
+    visibles = visibles.filter((p) => p.nombre.toLowerCase().includes(busqueda));
+  }
 
-  list.forEach((p) => {//Recorro los productos
-    const emoji = CATEGORY_EMOJI[p.categorias[0]?.nombre ?? ""] ?? "🍽️";
+  if (orden === "nombre-asc") visibles.sort((a, b) => a.nombre.localeCompare(b.nombre));
+  if (orden === "nombre-desc") visibles.sort((a, b) => b.nombre.localeCompare(a.nombre));
+  if (orden === "precio-asc") visibles.sort((a, b) => a.precio - b.precio);
+  if (orden === "precio-desc") visibles.sort((a, b) => b.precio - a.precio);
 
+  productList.innerHTML = "";
+  noResults.style.display = visibles.length === 0 ? "block" : "none";
+
+  visibles.forEach((p) => {
     const card = document.createElement("div");
-    card.className = "product-card";
 
-    const image = document.createElement("div");
-    image.className = "product-card__image" + (p.disponible ? "" : " product-card__image--no-stock");
-    image.textContent = emoji;
-
-    const body = document.createElement("div");
-    body.className = "product-card__body";
+    const img = document.createElement("img");
+    img.src = p.imagen;
+    img.alt = p.nombre;
 
     const title = document.createElement("h3");
     title.className = "product-card__title";
     title.textContent = p.nombre;
 
-    const description = document.createElement("p");
-    description.className = "product-card__description";
-    description.textContent = p.descripcion;
+    const desc = document.createElement("p");
+    desc.className = "product-card__description";
+    desc.textContent = p.descripcion;
 
     const price = document.createElement("span");
     price.className = "product-card__price";
     price.textContent = `$${p.precio.toLocaleString("es-AR")}`;
 
     const btn = document.createElement("button");
-    btn.className = `product-card__btn ${!p.disponible ? "product-card__btn--disabled" : ""}`;
-    btn.textContent = "Agregar al carrito";
-    btn.disabled = !p.disponible;
-    btn.addEventListener("click", () => addToCart(p));
+    btn.className = "product-card__btn";
+    btn.textContent = "Ver detalle";
+    btn.addEventListener("click", () => {
+      window.location.href = `../productDetail/productDetail.html?id=${p.id}`;
+    });
 
-    if (!p.disponible) {
-      const unavailable = document.createElement("span");
-      unavailable.className = "product-card__unavailable";
-      unavailable.textContent = "Sin stock";
-      body.appendChild(unavailable);
-    }
-  
-    body.append(title, description, price, btn);
-    card.append(image, body);
+    card.append(img, title, desc, price, btn);
+    card.addEventListener("click", (ev) => {
+      if (ev.target !== btn) {
+        window.location.href = `../productDetail/productDetail.html?id=${p.id}`;
+      }
+    });
     productList.appendChild(card);
   });
 }
 
-function renderCategories(): void {
-  const categories = getCategories();
-  const allItem = document.createElement("li");
-  allItem.textContent = "Ver todos";
-  allItem.className = "sidebar__item";
-  allItem.classList.toggle("sidebar__item--active", activeCategory === null);
-  allItem.addEventListener("click", () => {
-    activeCategory = null;
-    refreshCategoryList();
-    renderProducts(getFilteredProducts());
-  });
-  categoryList.appendChild(allItem);
+async function init(): Promise<void> {
+  const user = getUser();
+  if (user) welcomeMsg.textContent = `Hola, ${user.nombre}`;
 
-  categories.forEach((cat) => {
-    const li = document.createElement("li");
-    li.textContent = cat.nombre;
-    li.className = "sidebar__item";
-    li.dataset.id = String(cat.id);
-    li.classList.toggle("sidebar__item--active", activeCategory === cat.id);
-    li.addEventListener("click", () => {
-      activeCategory = cat.id;
-      refreshCategoryList();
-      renderProducts(getFilteredProducts());
-    });
-    categoryList.appendChild(li);
-  });
+  [categorias, productos] = await Promise.all([
+    fetchJson<ICategory[]>("categorias.json"),
+    fetchJson<Product[]>("productos.json"),
+  ]);
+
+  renderCategorias();
+  renderProductos();
+  updateCartBadge();
 }
 
-function refreshCategoryList(): void {
-  categoryList.querySelectorAll<HTMLLIElement>(".sidebar__item").forEach((li) => {
-    const id = li.dataset.id ? Number(li.dataset.id) : null;
-    li.classList.toggle("sidebar__item--active", id === activeCategory);
-  });
-}
+searchInput.addEventListener("input", renderProductos);
+sortSelect.addEventListener("change", renderProductos);
+btnLogout.addEventListener("click", logout);
 
-searchInput.addEventListener("input", () => {
-  searchQuery = searchInput.value;
-  renderProducts(getFilteredProducts());
-});
-
-renderCategories();
-renderProducts(PRODUCTS);
-updateCartCount();*/
+init();

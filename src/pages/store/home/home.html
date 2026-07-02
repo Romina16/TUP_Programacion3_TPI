@@ -4,45 +4,53 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Food Store - Catálogo</title>
-  <link rel="stylesheet" href="/src/style.css">
+  <link rel="stylesheet" href="/src/styles.css" />
 </head>
 <body>
-
   <header>
     <h1>Food Store</h1>
     <nav>
       <ul>
-        <li><a href="#">Catálogo</a></li>
-        <li><a href="../cart/cart.html">Carrito (<span id="cartCount">0</span>)</a></li>
+        <li id="welcome-msg"></li>
+        <li><a href="../../client/orders/orders.html">Mis Pedidos</a></li>
+        <li><a href="../cart/cart.html">Carrito <span class="cart-badge" id="cartCount">0</span></a></li>
+        <li><button class="logout-button" id="btnLogout">Salir</button></li>
       </ul>
     </nav>
   </header>
 
   <div class="layout">
-    <!-- mostrar las categorias -->
     <aside class="sidebar">
       <h2 class="sidebar__title">Categorías</h2>
       <ul class="sidebar__list" id="categoryList"></ul>
     </aside>
 
-    <!-- mostrar los productos -->
     <main class="catalog">
-      
       <form class="search-form" onsubmit="event.preventDefault()">
         <input class="search-bar" type="text" id="searchInput" placeholder="Buscar productos por nombre..." />
       </form>
 
-      <h2>Productos Destacados</h2>
-      
+      <div class="filter-bar">
+        <label for="sortSelect">Ordenar por:</label>
+        <select id="sortSelect">
+          <option value="">Sin orden</option>
+          <option value="nombre-asc">Nombre A-Z</option>
+          <option value="nombre-desc">Nombre Z-A</option>
+          <option value="precio-asc">Precio ascendente</option>
+          <option value="precio-desc">Precio descendente</option>
+        </select>
+      </div>
+
+      <h2>Productos</h2>
+
       <p id="noResults" style="display: none; color: #cc0000; font-weight: bold;">
         No se encontraron productos.
       </p>
 
       <div id="productList"></div>
-      
     </main>
   </div>
-  <!-- mostrar mensaje de producto agregado al carrito -->
+
   <div class="toast" id="toast">¡Producto agregado al carrito!</div>
 
   <script type="module" src="./home.ts"></script>

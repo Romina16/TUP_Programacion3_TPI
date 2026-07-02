@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Food Store - Mis Pedidos</title>
+  <link rel="stylesheet" href="/src/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Food Store</h1>
+    <nav>
+      <ul>
+        <li><a href="../../store/home/home.html">Catálogo</a></li>
+        <li><a href="../../store/cart/cart.html">Carrito</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="cart-content-wrapper">
+    <h1 class="main-title">Mis Pedidos</h1>
+    <p class="success-msg" id="confirmMsg" hidden>¡Tu pedido fue confirmado con éxito!</p>
+    <div id="ordersList"></div>
+  </main>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <script type="module" src="./orders.ts"></script>
+</body>
+</html>

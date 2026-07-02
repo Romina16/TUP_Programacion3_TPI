@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Food Store - Categorías</title>
+  <link rel="stylesheet" href="/src/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Food Store Admin</h1>
+    <nav>
+      <ul>
+        <li><a href="../../store/home/home.html">Ver Tienda</a></li>
+        <li><button class="logout-button" id="btnLogout">Salir</button></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <ul>
+        <li><a href="../adminHome/adminHome.html">Dashboard</a></li>
+        <li><a href="./categories.html" class="active">Categorías</a></li>
+        <li><a href="../products/products.html">Productos</a></li>
+        <li><a href="../orders/orders.html">Pedidos</a></li>
+      </ul>
+    </aside>
+
+    <main class="admin-content">
+      <div class="admin-header-actions">
+        <h2>Categorías</h2>
+        <button class="btn-checkout" id="btnNueva" style="width:auto;padding:0.8rem 1.5rem;">+ Nueva Categoría</button>
+      </div>
+      <table class="admin-table">
+        <thead>
+          <tr><th>ID</th><th>Imagen</th><th>Nombre</th><th>Descripción</th><th>Acciones</th></tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <h2 id="modalTitle">Nueva Categoría</h2>
+      <form id="form">
+        <input type="hidden" id="catId" />
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" required />
+        </div>
+        <div class="form-group">
+          <label for="descripcion">Descripción</label>
+          <textarea id="descripcion" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="imagen">Imagen (URL)</label>
+          <input type="text" id="imagen" required />
+        </div>
+        <p class="error-msg" id="formError" hidden></p>
+        <button type="submit" class="btn-checkout">Guardar</button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="./categories.ts"></script>
+</body>
+</html>

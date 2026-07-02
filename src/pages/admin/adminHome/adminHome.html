@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Food Store - Panel Admin</title>
+  <link rel="stylesheet" href="/src/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Food Store Admin</h1>
+    <nav>
+      <ul>
+        <li id="welcome-msg"></li>
+        <li><a href="../../store/home/home.html">Ver Tienda</a></li>
+        <li><button class="logout-button" id="btnLogout">Salir</button></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <ul>
+        <li><a href="./adminHome.html" class="active">Dashboard</a></li>
+        <li><a href="../categories/categories.html">Categorías</a></li>
+        <li><a href="../products/products.html">Productos</a></li>
+        <li><a href="../orders/orders.html">Pedidos</a></li>
+      </ul>
+    </aside>
+
+    <main class="admin-content">
+      <h2>Dashboard</h2>
+      <div class="stats-grid" id="statsGrid"></div>
+      <div id="resumenPanel"></div>
+    </main>
+  </div>
+
+  <script type="module" src="./adminHome.ts"></script>
+</body>
+</html>

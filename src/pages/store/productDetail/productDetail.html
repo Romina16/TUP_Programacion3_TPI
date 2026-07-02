@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Food Store - Detalle de producto</title>
+  <link rel="stylesheet" href="/src/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Food Store</h1>
+    <nav>
+      <ul>
+        <li><a href="../home/home.html">Catálogo</a></li>
+        <li><a href="../cart/cart.html">Carrito <span class="cart-badge" id="cartCount">0</span></a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="product-detail" id="productDetail"></main>
+
+  <div class="toast" id="toast">¡Producto agregado al carrito!</div>
+
+  <script type="module" src="./productDetail.ts"></script>
+</body>
+</html>

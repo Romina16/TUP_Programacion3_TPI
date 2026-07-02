@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi carrito</title>
-    <link rel="stylesheet" href="/src/style.css">
+    <link rel="stylesheet" href="/src/styles.css">
 </head>
 <body>
     <header>
-        <h1>Food Store</h1>   
+        <h1>Food Store</h1>
         <nav>
             <ul>
                 <li><a href="../home/home.html">Catálogo</a></li>
@@ -18,38 +18,57 @@
     </header>
 
     <main class="cart-container">
-
-        <div class="cart-content-wrapper"> 
-            <!-- mostrar los productos -->
+        <div class="cart-content-wrapper">
             <h1 class="main-title">Mi Carrito</h1>
-            
+
             <div class="cart-layout">
-                <!-- mostrar resumen -->
-                <section id="itemsList" class="cart-items">
-                    </section>
+                <section id="itemsList" class="cart-items"></section>
 
                 <aside class="cart-summary">
                     <h2>Resumen</h2>
-                    
+
                     <div class="summary-row">
                         <span>Subtotal</span>
                         <span id="summarySubtotal">$0</span>
                     </div>
-                    
+                    <div class="summary-row">
+                        <span>Envío</span>
+                        <span id="summaryEnvio">$0</span>
+                    </div>
                     <div class="summary-row total">
                         <span>Total</span>
                         <span id="summaryTotal">$0</span>
                     </div>
-                    
-                    <button id="btnFinalizar" class="btn-checkout" disabled>Finalizar compra</button>
-                    <p class="warning-text" style="color: #666; font-size: 0.9rem; margin-top: 10px;">⚠️ El checkout no está disponible en esta versión.</p>
-                    
+
+                    <button id="btnFinalizar" class="btn-checkout" disabled>Proceder al pago</button>
                     <button id="btnVaciar" class="btn-empty">Vaciar carrito</button>
                 </aside>
-                
             </div>
         </div>
-    </main> 
+    </main>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <h2>Confirmar pedido</h2>
+            <form id="checkoutForm">
+                <div class="form-group">
+                    <label for="telefono">Teléfono de contacto</label>
+                    <input type="tel" id="telefono" name="telefono" required />
+                </div>
+                <div class="form-group">
+                    <label for="formaPago">Forma de pago</label>
+                    <select id="formaPago" name="formaPago" required>
+                        <option value="TARJETA">Tarjeta</option>
+                        <option value="TRANSFERENCIA">Transferencia</option>
+                        <option value="EFECTIVO">Efectivo</option>
+                    </select>
+                </div>
+                <p class="error-msg" id="checkoutError" hidden></p>
+                <button type="submit" class="btn-checkout">Confirmar pedido</button>
+            </form>
+        </div>
+    </div>
 
     <script type="module" src="./cart.ts"></script>
 </body>

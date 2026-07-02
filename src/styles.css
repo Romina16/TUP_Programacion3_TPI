@@ -457,6 +457,346 @@ nav a:hover {
 }
 
 /* ========================================
+   BADGE DE CARRITO EN EL HEADER
+   ======================================== */
+.cart-badge {
+    background-color: var(--color-blanco);
+    color: var(--color-primario);
+    border-radius: 50%;
+    padding: 2px 8px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    margin-left: 4px;
+}
+
+.logout-button {
+    background-color: transparent;
+    color: var(--color-blanco);
+    border: 2px solid var(--color-blanco);
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: var(--color-blanco);
+    color: var(--color-primario);
+}
+
+/* ========================================
+   ESTADO VACIO / MENSAJES
+   ======================================== */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #666;
+}
+
+.empty-state a,
+.empty-state .btn-checkout {
+    display: inline-block;
+    margin-top: 1rem;
+    max-width: 260px;
+}
+
+.error-msg {
+    color: #b00;
+    font-weight: 600;
+    margin: 0.5rem 0;
+}
+
+.success-msg {
+    color: #158422;
+    font-weight: 600;
+    margin: 0.5rem 0;
+}
+
+/* ========================================
+   DETALLE DE PRODUCTO
+   ======================================== */
+.product-detail {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 5%;
+    display: flex;
+    gap: 2.5rem;
+    align-items: flex-start;
+}
+
+.product-detail img,
+.product-detail .emoji-icon {
+    width: 320px;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 15px;
+    flex-shrink: 0;
+}
+
+.product-detail__info {
+    flex: 1;
+}
+
+.product-detail__info h2 {
+    font-size: 2rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.product-detail__price {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 1rem 0;
+}
+
+/* ========================================
+   BADGES DE ESTADO DE PEDIDO
+   ======================================== */
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-blanco);
+}
+
+.badge--pendiente { background-color: #e6a417; }
+.badge--confirmado { background-color: #2065d1; }
+.badge--terminado { background-color: #158422; }
+.badge--cancelado { background-color: #cc0000; }
+
+/* ========================================
+   TARJETAS DE PEDIDO
+   ======================================== */
+.order-card {
+    background-color: var(--color-tarjeta-oscura);
+    border: 1px solid var(--color-borde);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease;
+}
+
+.order-card:hover {
+    transform: translateY(-3px);
+}
+
+.order-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.order-card__total {
+    font-weight: 800;
+    font-size: 1.2rem;
+}
+
+/* ========================================
+   MODAL
+   ======================================== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-overlay.modal--show {
+    display: flex;
+}
+
+.modal-box {
+    background: var(--color-blanco);
+    border-radius: 15px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.2rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--color-texto);
+}
+
+/* ========================================
+   PANEL DE ADMINISTRACION
+   ======================================== */
+.admin-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 2rem 5%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.admin-sidebar {
+    flex: 0 0 220px;
+    background: var(--color-blanco);
+    border-radius: 12px;
+    padding: 1.2rem;
+    position: sticky;
+    top: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+}
+
+.admin-sidebar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.admin-sidebar li {
+    margin-bottom: 0.5rem;
+}
+
+.admin-sidebar a {
+    display: block;
+    padding: 10px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--color-texto);
+    font-weight: 600;
+}
+
+.admin-sidebar a:hover,
+.admin-sidebar a.active {
+    background-color: var(--color-borde);
+}
+
+.admin-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--color-blanco);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+}
+
+.stat-card__value {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--color-primario);
+}
+
+.stat-card__label {
+    color: #666;
+    margin-top: 0.3rem;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--color-blanco);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-borde);
+    vertical-align: middle;
+}
+
+.admin-table th {
+    background-color: var(--color-primario);
+    color: var(--color-blanco);
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.admin-table img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.action-links button {
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: var(--color-blanco);
+    margin-right: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-edit { background-color: #f39c12; }
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 10px;
+    border: 1px solid var(--color-borde);
+    border-radius: 6px;
+    font-family: var(--fuente-base);
+    font-size: 0.95rem;
+}
+
+.admin-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+}
+
+.filter-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1.2rem;
+    align-items: center;
+}
+
+/* ========================================
    RESPONSIVE
    ======================================== */
 @media (max-width: 768px) {

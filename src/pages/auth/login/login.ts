@@ -1,39 +1,43 @@
+import { login } from "../../../utils/auth";
+import { saveUser } from "../../../utils/localStorage";
+import { initAuthPage, navigate } from "../../../utils/navigate";
 
-import { login } from '../../../utils/auth';
-import { initAuthPage } from '../../../utils/navigate';
+// Si ya hay una sesion activa, redirige sin mostrar el formulario.
+initAuthPage();
 
-// si ya hay sesión activa, redirigir sin mostrar el formulario
-initAuthPage({
-  adminUrl:  '/src/pages/admin/index.html',
-  clientUrl: '/src/pages/client/index.html',
-});
+const form = document.getElementById("login-form") as HTMLFormElement;
+const errorMsg = document.getElementById("error-msg") as HTMLParagraphElement;
 
-const form     = document.getElementById('login-form') as HTMLFormElement | null;
-const errorMsg = document.getElementById('error-msg')  as HTMLParagraphElement | null;
-
-form?.addEventListener('submit', (e: Event): void => {
+form.addEventListener("submit", async (e: Event) => {
   e.preventDefault();
+  errorMsg.hidden = true;
 
-  const email    = (document.getElementById('email')    as HTMLInputElement).value.trim();
-  const password = (document.getElementById('password') as HTMLInputElement).value;
+  const mail = (document.getElementById("mail") as HTMLInputElement).value.trim();
+  const password = (document.getElementById("password") as HTMLInputElement).value;
 
-  if (errorMsg) errorMsg.hidden = true;
-
-  // Buscar coincidencia en localStorage
-  const user = login(email, password);
-
-  if (!user) {
-    if (errorMsg) {
-      errorMsg.textContent = 'Email o contraseña incorrectos.';
-      errorMsg.hidden = false;
-    }
+  if (!mail || !password) {
+    errorMsg.textContent = "Completá email y contraseña.";
+    errorMsg.hidden = false;
     return;
   }
 
-  // Redirigir según el rol
-  const target = user.rol === 'admin'
-    ? '/src/pages/admin/index.html'
-    : '/src/pages/client/index.html';
+  try {
+    const user = await login(mail, password);
 
-  window.location.replace(target);
+    if (!user) {
+      errorMsg.textContent = "Email o contraseña incorrectos.";
+      errorMsg.hidden = false;
+      return;
+    }
+
+    saveUser(user);
+    navigate(
+      user.rol === "ADMIN"
+        ? "/src/pages/admin/adminHome/adminHome.html"
+        : "/src/pages/store/home/home.html"
+    );
+  } catch (err) {
+    errorMsg.textContent = "Ocurrió un error al iniciar sesión. Intente nuevamente.";
+    errorMsg.hidden = false;
+  }
 });
