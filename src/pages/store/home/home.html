@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Food Store - Catálogo</title>
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+
+  <header>
+    <h1>Food Store</h1>
+    <nav>
+      <ul>
+        <li><a href="#">Catálogo</a></li>
+        <li><a href="../cart/cart.html">Carrito (<span id="cartCount">0</span>)</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="layout">
+    <!-- mostrar las categorias -->
+    <aside class="sidebar">
+      <h2 class="sidebar__title">Categorías</h2>
+      <ul class="sidebar__list" id="categoryList"></ul>
+    </aside>
+
+    <!-- mostrar los productos -->
+    <main class="catalog">
+      
+      <form class="search-form" onsubmit="event.preventDefault()">
+        <input class="search-bar" type="text" id="searchInput" placeholder="Buscar productos por nombre..." />
+      </form>
+
+      <h2>Productos Destacados</h2>
+      
+      <p id="noResults" style="display: none; color: #cc0000; font-weight: bold;">
+        No se encontraron productos.
+      </p>
+
+      <div id="productList"></div>
+      
+    </main>
+  </div>
+  <!-- mostrar mensaje de producto agregado al carrito -->
+  <div class="toast" id="toast">¡Producto agregado al carrito!</div>
+
+  <script type="module" src="./home.ts"></script>
+</body>
+</html>

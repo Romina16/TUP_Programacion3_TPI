@@ -1,3 +1,4 @@
+/*
 //Aquí irán los arrays de datos
 import type { IProducto } from '../types/IUser';
 
@@ -47,4 +48,4 @@ export const productos: IProducto[] = [
         categoria: "Bebidas",
         alt: "Foto de una cerveza"
     }
-];
+];*/

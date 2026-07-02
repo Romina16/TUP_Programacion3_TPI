@@ -1,5 +1,5 @@
 //  Ruta protegida: solo accesible para usuarios con rol 'admin'.
-
+/*
 import { getCurrentUser, logout } from '../../utils/auth';
 import { initPage } from '../../utils/navigate';
 import { productos, categorias } from '../../data/index';
@@ -26,3 +26,4 @@ document.getElementById('logout-btn')?.addEventListener('click', (): void => {
   logout();
   window.location.replace('/src/pages/auth/login/index.html');
 });
+*/

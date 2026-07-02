@@ -1,0 +1,482 @@
+/* ========================================
+   RESET Y VARIABLES
+   ======================================== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+:root {
+    --color-primario: #800020; 
+    --color-fondo: #fcfaf9; 
+    --color-texto: #2d2d2d;
+    --color-blanco: #ffffff;
+    --color-borde: #e0d6d3;
+    --color-focus: #beb7b9; 
+    --color-focus2: #158422; 
+    --fuente-base: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --color-fondo-oscuro: #bbbbbbe5; 
+    --color-tarjeta-oscura: #ebebeb; 
+    --color-texto-claro: #f0f0f0;
+}
+
+/* ========================================
+   ESTILOS GENERALES
+   ======================================== */
+body {
+    margin: 0; 
+    padding: 0;
+    background-color: var(--color-fondo-oscuro);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-attachment: fixed;
+}
+
+/* ========================================
+   HEADER Y NAVEGACIÓN
+   ======================================== */
+header {
+    background-color: var(--color-primario);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 0;
+}
+
+header h1 {
+    color: var(--color-blanco);
+    margin: 0;
+    font-size: 2.2rem; 
+    font-weight: 900;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+}
+
+nav ul {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    gap: 25px;
+    margin: 0;
+    padding: 0;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--color-blanco);
+    font-weight: 600;
+    font-size: 1.2rem; 
+    padding: 0.5rem 1rem;
+    transition: opacity 0.3s ease;
+}
+
+nav a:hover {
+    opacity: 0.8;
+}
+
+/* ========================================
+   PÁGINA HOME - LAYOUT
+   ======================================== */
+.layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;      
+    padding: 2rem 5%; 
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.catalog {
+    flex: 1; 
+}
+
+/* ========================================
+   SIDEBAR Y CATEGORÍAS
+   ======================================== */
+.sidebar {
+    flex: 0 0 250px; 
+    position: sticky;
+    top: 20px;
+}
+
+.sidebar__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar__item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 6px;
+    margin-bottom: 5px;
+    transition: background-color 0.2s;
+}
+
+.sidebar__item:hover,
+.sidebar__item--active {
+    background-color: var(--color-borde);
+    font-weight: bold;
+}
+
+/* ========================================
+   BUSCADOR
+   ======================================== */
+.search-form {
+    margin-bottom: 25px;
+}
+
+.search-bar {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid var(--color-borde);
+    border-radius: 8px;
+    font-size: 1.1rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.search-bar:focus {
+    border-color: var(--color-primario);
+}
+
+/* ========================================
+   CATÁLOGO DE PRODUCTOS (HOME)
+   ======================================== */
+#productList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 25px; 
+    align-items: stretch; 
+}
+
+#productList > div {
+    background-color: var(--color-tarjeta-oscura);
+    border: 1px solid var(--color-borde);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column; 
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#productList > div:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+#productList img, 
+#productList .emoji-icon {
+    width: 100%;
+    height: 180px; 
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+/* ========================================
+   TARJETAS DE PRODUCTO (CATÁLOGO)
+   ======================================== */
+.product-card__title {
+    margin: 0 0 10px 0;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--color-texto);
+}
+
+.product-card__description {
+    margin: 0 0 15px 0;
+    color: #555; 
+    font-size: 0.95rem;
+    line-height: 1.4;
+    flex-grow: 1;
+}
+
+.product-card__price {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--color-texto);
+    margin-bottom: 10px; 
+    display: block;
+}
+
+.product-card__unavailable {
+    color: #cc0000;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.product-card__btn {
+    margin-top: auto;
+    width: 100%;
+    background-color: var(--color-primario);
+    color: var(--color-blanco);
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.product-card__btn:hover {
+    background-color: var(--color-focus2);
+}
+
+.product-card__btn--disabled {
+    background-color: #9e9e9e !important;
+    background-color: var(--color-fondo-oscuro);
+    cursor: not-allowed;
+    pointer-events: none;
+    filter: grayscale(1);
+}
+
+/* ========================================
+   PÁGINA CARRITO - LAYOUT
+   ======================================== */
+.cart-container {
+    padding-top: 10px; 
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.cart-content-wrapper {
+    max-width: 1000px; 
+    margin: 0 auto;
+    padding-top: 40px;
+}
+
+.main-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 0 0 15px 0;
+    max-width: 1200px;
+}
+
+.cart-layout {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start; 
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.cart-items {
+    flex: 2; 
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* ========================================
+   TARJETAS DE PRODUCTO (CARRITO)
+   ======================================== */
+.product-card {
+    background-color: var(--color-tarjeta-oscura);
+    border: 1px solid var(--color-borde);
+    border-radius: 15px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-3px); 
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.product-img {
+    width: 80px;
+    height: 80px;
+}
+
+.product-details h3 {
+    font-size: 1.4rem; 
+    margin-bottom: 0.5rem;
+}
+
+.product-controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center; 
+    gap: 15px;
+}
+
+.subtotal-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* ========================================
+   SELECTOR DE CANTIDAD
+   ======================================== */
+.quantity-selector {
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between;
+    border: 1px solid var(--color-borde);
+    border-radius: 50px; 
+    padding: 5px 10px;
+    min-width: 110px;
+    height: 40px;
+}
+
+.quantity-selector button {
+    background-color: transparent;
+    border: none;
+    color: var(--color-texto);
+    font-size: 1.2rem;
+    font-weight: bold;
+    width: 35px;
+    height: 100%;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.quantity-selector button:hover {
+    background-color: var(--color-primario);
+    color: var(--color-blanco);
+}
+
+/* ========================================
+   RESUMEN DEL CARRITO
+   ======================================== */
+.cart-summary {
+    flex: 0 0 350px; 
+    background-color: var(--color-tarjeta-oscura);
+    border: 1px solid var(--color-borde);
+    border-radius: 20px;
+    padding: 2.5rem;
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.18);
+}
+
+.cart-summary h2 {
+    font-size: 1.8rem;
+    margin: 0 0 1.5rem 0;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.total {
+    font-size: 1.5rem;
+    font-weight: 800;
+    border-top: 1px solid var(--color-borde);
+    padding-top: 1rem;
+}
+
+/* ========================================
+   BOTONES
+   ======================================== */
+.btn-checkout {
+    width: 100%;
+    background-color: #23b416; 
+    color: white;
+    border: none;
+    padding: 1.2rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-checkout:hover:not(:disabled) {
+    background-color: #1d9412;
+}
+
+.btn-empty {
+    width: 100%;
+    background: transparent;
+    border: 3px solid #cc0000ad;
+    color: #b00;
+    padding: 0.8rem;
+    margin-top: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.btn-empty:hover {
+    background-color: #b00;
+    color: white;
+}
+
+.btn-delete {
+    background: transparent;
+    color: var(--color-primario);
+    border: 1px solid transparent;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline; 
+    padding: 5px 10px;
+    transition: color 0.2s;
+}
+
+.btn-delete:hover {
+    color: var(--color-focus);
+    text-decoration: none;
+}
+
+/* ========================================
+   NOTIFICACIÓN TOAST
+   ======================================== */
+.toast {
+    position: fixed;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%); 
+    background-color: #23b416; 
+    color: white;
+    padding: 15px 30px;
+    border-radius: 50px; 
+    font-weight: bold;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    transition: bottom 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 9999;
+}
+
+.toast--show {
+    bottom: 30px; 
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+    .cart-layout {
+        flex-direction: column;
+    }
+    
+    .cart-summary {
+        position: static;
+        flex: 1;
+        width: 100%;
+    }
+    
+    .layout {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        position: static;
+        flex: 1;
+        width: 100%;
+    }
+}

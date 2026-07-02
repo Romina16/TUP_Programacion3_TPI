@@ -1,5 +1,5 @@
 //Aquí irá la lógica de renderizado
-
+/*
 import { getCurrentUser, logout } from '../../utils/auth';
 import { initPage } from '../../utils/navigate';
 import { productos, categorias } from '../../data/index';
@@ -105,4 +105,4 @@ listaCategorias?.addEventListener('click', (e: Event): void => {
     : productos;
 
   renderProductos(filtrados);
-});
+});*/
