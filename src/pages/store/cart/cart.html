@@ -50,22 +50,35 @@
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-box">
             <button class="modal-close" id="modalClose">&times;</button>
-            <h2>Confirmar pedido</h2>
-            <form id="checkoutForm">
+            <h2>Completar Pedido</h2>
+            <form id="checkoutForm" class="checkout-form">
                 <div class="form-group">
-                    <label for="telefono">Teléfono de contacto</label>
-                    <input type="tel" id="telefono" name="telefono" required />
+                    <label for="telefono">Teléfono</label>
+                    <input type="tel" id="telefono" name="telefono" placeholder="Ej: +54 9 261 123-4567" required />
                 </div>
                 <div class="form-group">
-                    <label for="formaPago">Forma de pago</label>
+                    <label for="direccion">Dirección de Entrega</label>
+                    <textarea id="direccion" name="direccion" rows="2" placeholder="Calle, número, piso, depto" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="formaPago">Método de Pago</label>
                     <select id="formaPago" name="formaPago" required>
+                        <option value="">Seleccione un método</option>
                         <option value="TARJETA">Tarjeta</option>
                         <option value="TRANSFERENCIA">Transferencia</option>
                         <option value="EFECTIVO">Efectivo</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label for="notas">Notas adicionales (opcional)</label>
+                    <textarea id="notas" name="notas" rows="2" placeholder="Instrucciones especiales, timbre, etc."></textarea>
+                </div>
                 <p class="error-msg" id="checkoutError" hidden></p>
-                <button type="submit" class="btn-checkout">Confirmar pedido</button>
+                <div class="checkout-total">
+                    <span>Total a pagar:</span>
+                    <span id="checkoutTotal">$0</span>
+                </div>
+                <button type="submit" class="btn-checkout">Confirmar Pedido</button>
             </form>
         </div>
     </div>

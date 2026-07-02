@@ -1,11 +1,12 @@
 import type { ICategory } from "../../../types/categoria";
 import type { Product } from "../../../types/product";
 import { logout } from "../../../utils/auth";
+import { getCategorias, getProductos } from "../../../utils/catalogo";
 import { getCart, getUser } from "../../../utils/localStorage";
-import { fetchJson } from "../../../utils/fetchJson";
 import { initPage } from "../../../utils/navigate";
 
-if (!initPage("USUARIO")) {
+// Sin rol requerido: ADMIN también puede navegar la tienda desde "Ver Tienda".
+if (!initPage()) {
   throw new Error("redirecting");
 }
 
@@ -17,6 +18,8 @@ const sortSelect = document.getElementById("sortSelect") as HTMLSelectElement;
 const cartCount = document.getElementById("cartCount") as HTMLSpanElement;
 const welcomeMsg = document.getElementById("welcome-msg") as HTMLLIElement;
 const btnLogout = document.getElementById("btnLogout") as HTMLButtonElement;
+const navOrdersItem = document.getElementById("navOrdersItem") as HTMLLIElement;
+const navCartItem = document.getElementById("navCartItem") as HTMLLIElement;
 
 let categorias: ICategory[] = [];
 let productos: Product[] = [];
@@ -116,10 +119,14 @@ async function init(): Promise<void> {
   const user = getUser();
   if (user) welcomeMsg.textContent = `Hola, ${user.nombre}`;
 
-  [categorias, productos] = await Promise.all([
-    fetchJson<ICategory[]>("categorias.json"),
-    fetchJson<Product[]>("productos.json"),
-  ]);
+  if (user?.rol === "ADMIN") {
+    // El admin navega la tienda solo para consultar el catálogo: no compra, por lo
+    // que no tiene sentido mostrarle "Mis Pedidos" ni el carrito (tabla de roles F4.2).
+    navCartItem.style.display = "none";
+    navOrdersItem.innerHTML = `<a href="../../admin/adminHome/adminHome.html">Panel Admin</a>`;
+  }
+
+  [categorias, productos] = await Promise.all([getCategorias(), getProductos()]);
 
   renderCategorias();
   renderProductos();

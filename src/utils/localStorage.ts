@@ -1,5 +1,6 @@
 import type { IUser } from "../types/IUser";
-import type { CartItem } from "../types/product";
+import type { ICategory } from "../types/categoria";
+import type { CartItem, Product } from "../types/product";
 import type { Pedido } from "../types/pedido";
 import type { Usuario } from "../types/usuario";
 
@@ -7,6 +8,8 @@ const KEY_USER = "userData";
 const KEY_CART = "cart";
 const KEY_PEDIDOS_LOCALES = "pedidosLocal";
 const KEY_USUARIOS_REGISTRADOS = "usuariosRegistrados";
+const KEY_CATEGORIAS_OVERRIDES = "categoriasOverrides";
+const KEY_PRODUCTOS_OVERRIDES = "productosOverrides";
 
 export const saveUser = (user: IUser): void => {
   localStorage.setItem(KEY_USER, JSON.stringify(user));
@@ -62,4 +65,32 @@ export const addUsuarioRegistrado = (usuario: Usuario): void => {
   const usuarios = getUsuariosRegistrados();
   usuarios.push(usuario);
   localStorage.setItem(KEY_USUARIOS_REGISTRADOS, JSON.stringify(usuarios));
+};
+
+// El panel de administración no puede escribir en los JSON de solo lectura, pero al
+// ser una app multipágina cada navegación recarga el script de la página: sin esto,
+// una categoría o producto creado en una pantalla del admin no aparece en las demás.
+// Se guarda un "overlay" por ID en localStorage (altas, ediciones y bajas lógicas)
+// que se combina con el JSON base cada vez que se listan categorías/productos, para
+// que los cambios persistan durante la sesión en todo el sitio (catálogo incluido).
+export const getCategoriaOverrides = (): Record<number, ICategory> => {
+  const raw = localStorage.getItem(KEY_CATEGORIAS_OVERRIDES);
+  return raw ? (JSON.parse(raw) as Record<number, ICategory>) : {};
+};
+
+export const saveCategoriaOverride = (categoria: ICategory): void => {
+  const overrides = getCategoriaOverrides();
+  overrides[categoria.id] = categoria;
+  localStorage.setItem(KEY_CATEGORIAS_OVERRIDES, JSON.stringify(overrides));
+};
+
+export const getProductoOverrides = (): Record<number, Product> => {
+  const raw = localStorage.getItem(KEY_PRODUCTOS_OVERRIDES);
+  return raw ? (JSON.parse(raw) as Record<number, Product>) : {};
+};
+
+export const saveProductoOverride = (producto: Product): void => {
+  const overrides = getProductoOverrides();
+  overrides[producto.id] = producto;
+  localStorage.setItem(KEY_PRODUCTOS_OVERRIDES, JSON.stringify(overrides));
 };

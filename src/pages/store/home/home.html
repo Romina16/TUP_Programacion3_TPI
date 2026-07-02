@@ -12,8 +12,8 @@
     <nav>
       <ul>
         <li id="welcome-msg"></li>
-        <li><a href="../../client/orders/orders.html">Mis Pedidos</a></li>
-        <li><a href="../cart/cart.html">Carrito <span class="cart-badge" id="cartCount">0</span></a></li>
+        <li id="navOrdersItem"><a href="../../client/orders/orders.html">Mis Pedidos</a></li>
+        <li id="navCartItem"><a href="../cart/cart.html">Carrito <span class="cart-badge" id="cartCount">0</span></a></li>
         <li><button class="logout-button" id="btnLogout">Salir</button></li>
       </ul>
     </nav>
@@ -26,20 +26,16 @@
     </aside>
 
     <main class="catalog">
-      <form class="search-form" onsubmit="event.preventDefault()">
+      <form class="search-form search-form--with-sort" onsubmit="event.preventDefault()">
         <input class="search-bar" type="text" id="searchInput" placeholder="Buscar productos por nombre..." />
-      </form>
-
-      <div class="filter-bar">
-        <label for="sortSelect">Ordenar por:</label>
-        <select id="sortSelect">
-          <option value="">Sin orden</option>
+        <select class="sort-select" id="sortSelect">
+          <option value="">Ordenar por</option>
           <option value="nombre-asc">Nombre A-Z</option>
           <option value="nombre-desc">Nombre Z-A</option>
           <option value="precio-asc">Precio ascendente</option>
           <option value="precio-desc">Precio descendente</option>
         </select>
-      </div>
+      </form>
 
       <h2>Productos</h2>
 

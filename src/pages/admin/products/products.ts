@@ -1,7 +1,8 @@
 import type { ICategory } from "../../../types/categoria";
 import type { Product } from "../../../types/product";
 import { logout } from "../../../utils/auth";
-import { fetchJson } from "../../../utils/fetchJson";
+import { getCategorias, getProductos } from "../../../utils/catalogo";
+import { saveProductoOverride } from "../../../utils/localStorage";
 import { initPage } from "../../../utils/navigate";
 
 if (!initPage("ADMIN")) {
@@ -21,8 +22,8 @@ const categoriaSelect = document.getElementById("categoriaId") as HTMLSelectElem
 
 btnLogout.addEventListener("click", logout);
 
-// CRUD en memoria: los cambios se pierden al recargar (F7), consistente con el
-// resto del panel de administracion.
+// Las altas/ediciones/bajas se guardan como overlay en localStorage (ver
+// utils/catalogo.ts) para que persistan durante la sesión en toda la app.
 let productos: Product[] = [];
 let categorias: ICategory[] = [];
 
@@ -91,8 +92,13 @@ tbody.addEventListener("click", (e) => {
 
   if (target.dataset.action === "eliminar") {
     if (confirm("¿Confirma dar de baja este producto?")) {
-      productos = productos.map((p) => (p.id === id ? { ...p, eliminado: true } : p));
-      render();
+      const producto = productos.find((p) => p.id === id);
+      if (producto) {
+        const actualizado = { ...producto, eliminado: true };
+        saveProductoOverride(actualizado);
+        productos = productos.map((p) => (p.id === id ? actualizado : p));
+        render();
+      }
     }
   }
 });
@@ -116,35 +122,19 @@ form.addEventListener("submit", (e: Event) => {
   }
 
   const id = prodIdInput.value ? Number(prodIdInput.value) : null;
+  const producto: Product = id
+    ? { ...(productos.find((p) => p.id === id) as Product), nombre, descripcion, precio, stock, imagen, disponible, categoriaId }
+    : { id: Math.max(0, ...productos.map((p) => p.id)) + 1, nombre, descripcion, precio, stock, imagen, disponible, eliminado: false, categoriaId };
 
-  if (id) {
-    productos = productos.map((p) =>
-      p.id === id ? { ...p, nombre, descripcion, precio, stock, imagen, disponible, categoriaId } : p
-    );
-  } else {
-    const nuevoId = Math.max(0, ...productos.map((p) => p.id)) + 1;
-    productos.push({
-      id: nuevoId,
-      nombre,
-      descripcion,
-      precio,
-      stock,
-      imagen,
-      disponible,
-      eliminado: false,
-      categoriaId,
-    });
-  }
+  saveProductoOverride(producto);
+  productos = id ? productos.map((p) => (p.id === id ? producto : p)) : [...productos, producto];
 
   modalOverlay.classList.remove("modal--show");
   render();
 });
 
 async function init(): Promise<void> {
-  [productos, categorias] = await Promise.all([
-    fetchJson<Product[]>("productos.json"),
-    fetchJson<ICategory[]>("categorias.json"),
-  ]);
+  [productos, categorias] = await Promise.all([getProductos(), getCategorias()]);
   renderSelectCategorias();
   render();
 }

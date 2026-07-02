@@ -19,6 +19,7 @@ const modalOverlay = document.getElementById("modalOverlay") as HTMLDivElement;
 const modalClose = document.getElementById("modalClose") as HTMLButtonElement;
 const checkoutForm = document.getElementById("checkoutForm") as HTMLFormElement;
 const checkoutError = document.getElementById("checkoutError") as HTMLParagraphElement;
+const checkoutTotal = document.getElementById("checkoutTotal") as HTMLSpanElement;
 
 function fmt(valor: number): string {
   return `$${valor.toLocaleString("es-AR")}`;
@@ -111,6 +112,7 @@ function renderCart(): void {
 }
 
 btnFinalizar.addEventListener("click", () => {
+  checkoutTotal.textContent = fmt(calcularTotal(getCart()));
   modalOverlay.classList.add("modal--show");
 });
 
@@ -128,11 +130,12 @@ checkoutForm.addEventListener("submit", async (e: Event) => {
   checkoutError.hidden = true;
 
   const telefono = (document.getElementById("telefono") as HTMLInputElement).value.trim();
+  const direccion = (document.getElementById("direccion") as HTMLTextAreaElement).value.trim();
   const formaPago = (document.getElementById("formaPago") as HTMLSelectElement).value as FormaPago;
   const items = getCart();
 
-  if (!telefono) {
-    checkoutError.textContent = "Ingresá un teléfono de contacto.";
+  if (!telefono || !direccion || !formaPago) {
+    checkoutError.textContent = "Completá teléfono, dirección de entrega y método de pago.";
     checkoutError.hidden = false;
     return;
   }
@@ -153,6 +156,8 @@ checkoutForm.addEventListener("submit", async (e: Event) => {
   const nuevoId = Math.max(0, ...todosLosPedidos.map((p) => p.id)) + 1;
   const subtotal = calcularSubtotal(items);
 
+  const notas = (document.getElementById("notas") as HTMLTextAreaElement).value.trim();
+
   const pedido: Pedido = {
     id: nuevoId,
     fecha: new Date().toISOString().slice(0, 10),
@@ -165,6 +170,9 @@ checkoutForm.addEventListener("submit", async (e: Event) => {
       cantidad: item.cantidad,
       subtotal: item.precio * item.cantidad,
     })),
+    telefono,
+    direccion,
+    ...(notas ? { notas } : {}),
   };
 
   savePedidoLocal(pedido);

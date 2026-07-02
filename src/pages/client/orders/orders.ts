@@ -1,5 +1,6 @@
 import type { EstadoPedido, Pedido } from "../../../types/pedido";
 import type { Product } from "../../../types/product";
+import { getProductos } from "../../../utils/catalogo";
 import { fetchJson } from "../../../utils/fetchJson";
 import { getPedidosLocales, getUser } from "../../../utils/localStorage";
 import { initPage } from "../../../utils/navigate";
@@ -34,7 +35,7 @@ async function init(): Promise<void> {
 
   const [pedidosJson, productos] = await Promise.all([
     fetchJson<Pedido[]>("pedidos.json"),
-    fetchJson<Product[]>("productos.json"),
+    getProductos(),
   ]);
 
   const pedidos = [...pedidosJson, ...getPedidosLocales()]
@@ -52,10 +53,14 @@ async function init(): Promise<void> {
 
   ordersList.innerHTML = "";
   pedidos.forEach((pedido) => {
-    const nombresProductos = pedido.detalles
+    const itemsPreview = pedido.detalles
       .slice(0, 3)
-      .map((d) => productos.find((p) => p.id === d.idProducto)?.nombre ?? "Producto")
-      .join(", ");
+      .map((d) => {
+        const nombre = productos.find((p) => p.id === d.idProducto)?.nombre ?? "Producto";
+        return `<li>${nombre} (x${d.cantidad})</li>`;
+      })
+      .join("");
+    const cantidadProductos = pedido.detalles.reduce((acc, d) => acc + d.cantidad, 0);
 
     const card = document.createElement("div");
     card.className = "order-card";
@@ -64,30 +69,102 @@ async function init(): Promise<void> {
         <strong>Pedido #${pedido.id}</strong>
         <span class="badge ${BADGE_CLASS[pedido.estado]}">${pedido.estado}</span>
       </div>
-      <p>Fecha: ${pedido.fecha}</p>
-      <p>${nombresProductos}${pedido.detalles.length > 3 ? "…" : ""}</p>
-      <p class="order-card__total">Total: ${fmt(pedido.total)}</p>
+      <p class="order-card__date">📅 ${pedido.fecha}</p>
+      <ul class="order-card__products">
+        ${itemsPreview}
+        ${pedido.detalles.length > 3 ? "<li>…</li>" : ""}
+      </ul>
+      <div class="order-card__footer">
+        <span>📦 ${cantidadProductos} producto(s)</span>
+        <span class="order-card__total">${fmt(pedido.total)}</span>
+      </div>
     `;
     card.addEventListener("click", () => abrirDetalle(pedido, productos));
     ordersList.appendChild(card);
   });
 }
 
+const FORMA_PAGO_ICON: Record<string, string> = {
+  TARJETA: "💳",
+  TRANSFERENCIA: "🏦",
+  EFECTIVO: "💵",
+};
+
+const FORMA_PAGO_LABEL: Record<string, string> = {
+  TARJETA: "Tarjeta",
+  TRANSFERENCIA: "Transferencia",
+  EFECTIVO: "Efectivo",
+};
+
+const ESTADO_MENSAJE: Record<EstadoPedido, { clase: string; titulo: string; texto: string }> = {
+  PENDIENTE: {
+    clase: "order-status--pendiente",
+    titulo: "⏳ Tu pedido está siendo procesado",
+    texto: "Te notificaremos cuando esté listo para entrega.",
+  },
+  CONFIRMADO: {
+    clase: "order-status--confirmado",
+    titulo: "✅ Tu pedido fue confirmado",
+    texto: "Estamos preparando tu pedido.",
+  },
+  TERMINADO: {
+    clase: "order-status--terminado",
+    titulo: "🎉 Tu pedido fue entregado",
+    texto: "¡Gracias por tu compra!",
+  },
+  CANCELADO: {
+    clase: "order-status--cancelado",
+    titulo: "❌ Tu pedido fue cancelado",
+    texto: "Si tenés dudas, contactanos.",
+  },
+};
+
 function abrirDetalle(pedido: Pedido, productos: Product[]): void {
   const filas = pedido.detalles
     .map((d) => {
       const producto = productos.find((p) => p.id === d.idProducto);
-      return `<li>${producto?.nombre ?? "Producto"} x${d.cantidad} — ${fmt(d.subtotal)}</li>`;
+      return `
+        <div class="order-product-line">
+          <div>
+            <strong>${producto?.nombre ?? "Producto"}</strong>
+            <p>Cantidad: ${d.cantidad} × ${fmt(producto?.precio ?? d.subtotal / d.cantidad)}</p>
+          </div>
+          <span class="order-product-line__subtotal">${fmt(d.subtotal)}</span>
+        </div>`;
     })
     .join("");
 
+  const subtotal = pedido.detalles.reduce((acc, d) => acc + d.subtotal, 0);
+  const envio = pedido.total - subtotal;
+  const estadoInfo = ESTADO_MENSAJE[pedido.estado];
+
   modalContent.innerHTML = `
     <h2>Pedido #${pedido.id}</h2>
-    <p>Estado: <span class="badge ${BADGE_CLASS[pedido.estado]}">${pedido.estado}</span></p>
-    <p>Fecha: ${pedido.fecha}</p>
-    <p>Forma de pago: ${pedido.formaPago}</p>
-    <ul>${filas}</ul>
-    <p><strong>Total: ${fmt(pedido.total)}</strong></p>
+    <div style="text-align:center; margin-bottom:1rem;">
+      <span class="badge ${BADGE_CLASS[pedido.estado]}">${pedido.estado}</span>
+      <p class="order-card__date">📅 ${pedido.fecha}</p>
+    </div>
+
+    <div class="delivery-info-card">
+      <h3>📍 Información de Entrega</h3>
+      <p><strong>Dirección:</strong> ${pedido.direccion ?? "No especificada"}</p>
+      <p><strong>Teléfono:</strong> ${pedido.telefono ?? "No especificado"}</p>
+      <p><strong>Método de pago:</strong> ${FORMA_PAGO_ICON[pedido.formaPago]} ${FORMA_PAGO_LABEL[pedido.formaPago]}</p>
+    </div>
+
+    <h3>🛍️ Productos</h3>
+    ${filas}
+
+    <div class="order-totals">
+      <div class="summary-row"><span>Subtotal:</span><span>${fmt(subtotal)}</span></div>
+      <div class="summary-row"><span>Envío:</span><span>${fmt(envio)}</span></div>
+      <div class="summary-row total"><span>Total:</span><span>${fmt(pedido.total)}</span></div>
+    </div>
+
+    <div class="order-status-message ${estadoInfo.clase}">
+      <p><strong>${estadoInfo.titulo}</strong></p>
+      <p>${estadoInfo.texto}</p>
+    </div>
   `;
   modalOverlay.classList.add("modal--show");
 }

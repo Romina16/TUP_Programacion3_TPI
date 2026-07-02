@@ -2,6 +2,7 @@ import type { EstadoPedido, Pedido } from "../../../types/pedido";
 import type { Product } from "../../../types/product";
 import type { Usuario } from "../../../types/usuario";
 import { logout } from "../../../utils/auth";
+import { getProductos } from "../../../utils/catalogo";
 import { fetchJson } from "../../../utils/fetchJson";
 import { actualizarPedidoLocal, getPedidosLocales, getUsuariosRegistrados } from "../../../utils/localStorage";
 import { initPage } from "../../../utils/navigate";
@@ -121,7 +122,7 @@ filtroEstado.addEventListener("change", render);
 async function init(): Promise<void> {
   const [pedidosJson, productosJson, usuariosJson] = await Promise.all([
     fetchJson<Pedido[]>("pedidos.json"),
-    fetchJson<Product[]>("productos.json"),
+    getProductos(),
     fetchJson<Usuario[]>("usuarios.json"),
   ]);
 

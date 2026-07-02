@@ -1,6 +1,7 @@
 import type { ICategory } from "../../../types/categoria";
 import { logout } from "../../../utils/auth";
-import { fetchJson } from "../../../utils/fetchJson";
+import { getCategorias } from "../../../utils/catalogo";
+import { saveCategoriaOverride } from "../../../utils/localStorage";
 import { initPage } from "../../../utils/navigate";
 
 if (!initPage("ADMIN")) {
@@ -19,8 +20,9 @@ const catIdInput = document.getElementById("catId") as HTMLInputElement;
 
 btnLogout.addEventListener("click", logout);
 
-// Las operaciones de esta pantalla se aplican solo en memoria (estado local de la
-// pagina): al recargar el navegador se pierde lo modificado, tal como indica F7.
+// Las altas/ediciones/bajas se guardan como overlay en localStorage (ver
+// utils/catalogo.ts) para que persistan durante la sesión en toda la app, ya que
+// el JSON base es de solo lectura.
 let categorias: ICategory[] = [];
 
 function render(): void {
@@ -69,8 +71,13 @@ tbody.addEventListener("click", (e) => {
 
   if (target.dataset.action === "eliminar") {
     if (confirm("¿Confirma dar de baja esta categoría?")) {
-      categorias = categorias.map((c) => (c.id === id ? { ...c, eliminado: true } : c));
-      render();
+      const categoria = categorias.find((c) => c.id === id);
+      if (categoria) {
+        const actualizada = { ...categoria, eliminado: true };
+        saveCategoriaOverride(actualizada);
+        categorias = categorias.map((c) => (c.id === id ? actualizada : c));
+        render();
+      }
     }
   }
 });
@@ -90,20 +97,19 @@ form.addEventListener("submit", (e: Event) => {
   }
 
   const id = catIdInput.value ? Number(catIdInput.value) : null;
+  const categoria: ICategory = id
+    ? { ...(categorias.find((c) => c.id === id) as ICategory), nombre, descripcion, imagen }
+    : { id: Math.max(0, ...categorias.map((c) => c.id)) + 1, nombre, descripcion, imagen, eliminado: false };
 
-  if (id) {
-    categorias = categorias.map((c) => (c.id === id ? { ...c, nombre, descripcion, imagen } : c));
-  } else {
-    const nuevoId = Math.max(0, ...categorias.map((c) => c.id)) + 1;
-    categorias.push({ id: nuevoId, nombre, descripcion, imagen, eliminado: false });
-  }
+  saveCategoriaOverride(categoria);
+  categorias = id ? categorias.map((c) => (c.id === id ? categoria : c)) : [...categorias, categoria];
 
   modalOverlay.classList.remove("modal--show");
   render();
 });
 
 async function init(): Promise<void> {
-  categorias = await fetchJson<ICategory[]>("categorias.json");
+  categorias = await getCategorias();
   render();
 }
 

@@ -1,7 +1,6 @@
-import type { ICategory } from "../../../types/categoria";
 import type { EstadoPedido, Pedido } from "../../../types/pedido";
-import type { Product } from "../../../types/product";
 import { logout } from "../../../utils/auth";
+import { getCategorias, getProductos } from "../../../utils/catalogo";
 import { fetchJson } from "../../../utils/fetchJson";
 import { getPedidosLocales, getUser } from "../../../utils/localStorage";
 import { initPage } from "../../../utils/navigate";
@@ -26,8 +25,8 @@ async function init(): Promise<void> {
   if (user) welcomeMsg.textContent = `Hola, ${user.nombre}`;
 
   const [categorias, productos, pedidosJson] = await Promise.all([
-    fetchJson<ICategory[]>("categorias.json"),
-    fetchJson<Product[]>("productos.json"),
+    getCategorias(),
+    getProductos(),
     fetchJson<Pedido[]>("pedidos.json"),
   ]);
   const pedidos = [...pedidosJson, ...getPedidosLocales()];
@@ -51,12 +50,14 @@ async function init(): Promise<void> {
   pedidos.forEach((p) => porEstado[p.estado]++);
 
   resumenPanel.innerHTML = `
-    <h3>Resumen</h3>
-    <ul>
-      <li>Categorías activas: ${categoriasActivas} / ${categorias.length}</li>
-      <li>Productos activos: ${productosActivos.length} / ${productos.length} (disponibles: ${disponibles})</li>
-      <li>Pedidos: PENDIENTE ${porEstado.PENDIENTE} | CONFIRMADO ${porEstado.CONFIRMADO} | TERMINADO ${porEstado.TERMINADO} | CANCELADO ${porEstado.CANCELADO}</li>
-    </ul>
+    <div class="summary-card">
+      <h3>📊 Resumen Rápido</h3>
+      <ul>
+        <li>Categorías activas: ${categoriasActivas} / ${categorias.length}</li>
+        <li>Productos activos: ${productosActivos.length} / ${productos.length} (disponibles: ${disponibles})</li>
+        <li>Pedidos: PENDIENTE ${porEstado.PENDIENTE} | CONFIRMADO ${porEstado.CONFIRMADO} | TERMINADO ${porEstado.TERMINADO} | CANCELADO ${porEstado.CANCELADO}</li>
+      </ul>
+    </div>
   `;
 }
 
